@@ -16,8 +16,22 @@ const todo = props => {
         todos.push({id: key, name: todoData[key].name})
       }
       setTodoList(todos);
-    })
+    });
+    return () => {
+      console.log('Cleanup...');
+    }
   }, [todoName]);
+
+  const handleMouseMove = e => {
+    console.log(e.clientX, e.clientY);
+  }
+
+  useEffect(() => {
+    document.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+    }
+  }, []);
 
   const handleInputChange = e => {
     setTodoName(e.target.value);
