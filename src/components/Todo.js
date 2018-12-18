@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import * as db from '../endpoints';
 
 const todo = props => {
   const [todoName, setTodoName] = useState('');
@@ -10,6 +12,13 @@ const todo = props => {
 
   const handleAddTodo = () => {
     setTodoList(todoList.concat(todoName));
+    axios.post(db.POST_DB, {name: todoName})
+    .then(res => {
+      console.log(res);
+    })
+    .catch(err => {
+      console.log(err);
+    });
   }
 
   return (
