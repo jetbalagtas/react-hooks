@@ -4,6 +4,7 @@ import * as db from '../endpoints';
 
 const todo = props => {
   const [todoName, setTodoName] = useState('');
+  const [submittedTodo, setSubmittedTodo] = useState(null);
   const [todoList, setTodoList] = useState([]);
 
   useEffect(() => {
@@ -33,15 +34,23 @@ const todo = props => {
     }
   }, []);
 
+  useEffect(() => {
+    if (submittedTodo) {
+      setTodoList(todoList.concat(submittedTodo));
+    }
+  }, [submittedTodo]);
+
   const handleInputChange = e => {
     setTodoName(e.target.value);
   }
 
   const handleAddTodo = () => {
-    setTodoList(todoList.concat(todoName));
     axios.post(db.POSTS_DB, {name: todoName})
     .then(res => {
-      console.log(res);
+      setTimeout(() => {
+        const todoItem = { id: res.data.name, name: todoName }
+        setSubmittedTodo(todoItem);
+      }, 0);
     })
     .catch(err => {
       console.log(err);
