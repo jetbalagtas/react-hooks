@@ -4,7 +4,7 @@ import * as db from '../endpoints';
 
 const todo = props => {
   const [todoName, setTodoName] = useState('');
-  const [submittedTodo, setSubmittedTodo] = useState(null);
+  // const [submittedTodo, setSubmittedTodo] = useState(null);
   // const [todoList, setTodoList] = useState([]);
 
   const todoListReducer = (state, action) => {
@@ -23,7 +23,7 @@ const todo = props => {
   const [todoList, dispatch] = useReducer(todoListReducer, []);
 
   useEffect(() => {
-    axios.get(db.POSTS_DB)
+    axios.get(db.POSTS_DB + '.json')
     .then(result => {
       console.log(result);
       const todoData = result.data;
@@ -49,27 +49,35 @@ const todo = props => {
     }
   }, []);
 
-  useEffect(() => {
-    if (submittedTodo) {
-      dispatch({type: 'ADD', payload: submittedTodo});
-    }
-  }, [submittedTodo]);
+  // useEffect(() => {
+  //   if (submittedTodo) {
+  //     dispatch({type: 'ADD', payload: submittedTodo});
+  //   }
+  // }, [submittedTodo]);
 
   const handleInputChange = e => {
     setTodoName(e.target.value);
   }
 
   const handleAddTodo = () => {
-    axios.post(db.POSTS_DB, {name: todoName})
+    axios.post(db.POSTS_DB + '.json', {name: todoName})
     .then(res => {
       setTimeout(() => {
         const todoItem = { id: res.data.name, name: todoName }
-        setSubmittedTodo(todoItem);
+        dispatch({type: 'ADD', payload: todoItem});
       }, 0);
     })
     .catch(err => {
       console.log(err);
     });
+  }
+
+  const handleRemoveTodo = todoId => () => {
+    axios.delete(db.POSTS_DB + `/${todoId}.json`)
+    .then(res => {
+      dispatch({type: 'REMOVE', payload: todoId});
+    })
+    .catch(err => console.log(err));
   }
 
   return (
@@ -83,7 +91,7 @@ const todo = props => {
       <button type="button" onClick={handleAddTodo}>Add</button>
       <ul>
         {todoList.map(todo => (
-          <li key={todo.id}>{todo.name}</li>
+          <li key={todo.id} onClick={handleRemoveTodo(todo.id)}>{todo.name}</li>
         ))}
       </ul>
     </React.Fragment>
