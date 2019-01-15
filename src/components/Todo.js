@@ -1,15 +1,17 @@
-import React, { useState, useRef, useEffect, useReducer, useMemo } from 'react';
+import React, { useEffect, useReducer, useMemo } from 'react';
 import axios from 'axios';
 import * as db from '../endpoints';
 
 import List from './List';
+import { useFormInput } from '../hooks/forms';
 
 const todo = props => {
-  const [inputIsValid, setInputIsValid] = useState(false);
+  // const [inputIsValid, setInputIsValid] = useState(false);
   // const [todoName, setTodoName] = useState('');
   // const [submittedTodo, setSubmittedTodo] = useState(null);
   // const [todoList, setTodoList] = useState([]);
-  const todoInputRef = useRef();
+  // const todoInputRef = useRef();
+  const todoInput = useFormInput();
 
   const todoListReducer = (state, action) => {
     switch (action.type) {
@@ -63,13 +65,13 @@ const todo = props => {
   //   setTodoName(e.target.value);
   // }
 
-  const handleInputValidation = e => {
-    if (e.target.value.trim() === '') setInputIsValid(false);
-    setInputIsValid(true);
-  }
+  // const handleInputValidation = e => {
+  //   if (e.target.value.trim() === '') setInputIsValid(false);
+  //   setInputIsValid(true);
+  // }
 
   const handleAddTodo = () => {
-    const todoName = todoInputRef.current.value;
+    const todoName = todoInput.value;
     axios.post(db.POSTS_DB + '.json', {name: todoName})
     .then(res => {
       setTimeout(() => {
@@ -97,9 +99,11 @@ const todo = props => {
         placeholder="Todo"
         // onChange={handleInputChange}
         // value={todoName}
-        ref={todoInputRef}
-        onChange={handleInputValidation}
-        style={{backgroundColor: inputIsValid ? 'transparent' : 'salmon'}}
+        // ref={todoInputRef}
+        // onChange={handleInputValidation}
+        onChange={todoInput.onChange}
+        value={todoInput.value}
+        style={{backgroundColor: todoInput.validity === true ? 'transparent' : 'salmon'}}
       />
       <button type="button" onClick={handleAddTodo}>Add</button>
       {useMemo(() => (
