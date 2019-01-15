@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useReducer } from 'react';
+import React, { useState, useRef, useEffect, useReducer, useMemo } from 'react';
 import axios from 'axios';
 import * as db from '../endpoints';
 
@@ -102,7 +102,11 @@ const todo = props => {
         style={{backgroundColor: inputIsValid ? 'transparent' : 'salmon'}}
       />
       <button type="button" onClick={handleAddTodo}>Add</button>
-      <List items={todoList} onClick={handleRemoveTodo} />
+      {useMemo(() => (
+        <List items={todoList} onClick={handleRemoveTodo} />
+        ),
+        [todoList]
+      )}
     </React.Fragment>
   )
 }
