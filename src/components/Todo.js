@@ -1,8 +1,11 @@
-import React, { useRef, useEffect, useReducer } from 'react';
+import React, { useState, useRef, useEffect, useReducer } from 'react';
 import axios from 'axios';
 import * as db from '../endpoints';
 
+import List from './List';
+
 const todo = props => {
+  const [inputIsValid, setInputIsValid] = useState(false);
   // const [todoName, setTodoName] = useState('');
   // const [submittedTodo, setSubmittedTodo] = useState(null);
   // const [todoList, setTodoList] = useState([]);
@@ -39,16 +42,16 @@ const todo = props => {
     }
   }, []);
 
-  const handleMouseMove = e => {
-    console.log(e.clientX, e.clientY);
-  }
+  // const handleMouseMove = e => {
+  //   console.log(e.clientX, e.clientY);
+  // }
 
-  useEffect(() => {
-    document.addEventListener('mousemove', handleMouseMove);
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-    }
-  }, []);
+  // useEffect(() => {
+  //   document.addEventListener('mousemove', handleMouseMove);
+  //   return () => {
+  //     document.removeEventListener('mousemove', handleMouseMove);
+  //   }
+  // }, []);
 
   // useEffect(() => {
   //   if (submittedTodo) {
@@ -59,6 +62,11 @@ const todo = props => {
   // const handleInputChange = e => {
   //   setTodoName(e.target.value);
   // }
+
+  const handleInputValidation = e => {
+    if (e.target.value.trim() === '') setInputIsValid(false);
+    setInputIsValid(true);
+  }
 
   const handleAddTodo = () => {
     const todoName = todoInputRef.current.value;
@@ -90,13 +98,11 @@ const todo = props => {
         // onChange={handleInputChange}
         // value={todoName}
         ref={todoInputRef}
+        onChange={handleInputValidation}
+        style={{backgroundColor: inputIsValid ? 'transparent' : 'salmon'}}
       />
       <button type="button" onClick={handleAddTodo}>Add</button>
-      <ul>
-        {todoList.map(todo => (
-          <li key={todo.id} onClick={handleRemoveTodo(todo.id)}>{todo.name}</li>
-        ))}
-      </ul>
+      <List items={todoList} onClick={handleRemoveTodo} />
     </React.Fragment>
   )
 }
