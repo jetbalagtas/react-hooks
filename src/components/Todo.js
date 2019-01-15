@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useRef, useEffect, useReducer } from 'react';
 import axios from 'axios';
 import * as db from '../endpoints';
 
 const todo = props => {
-  const [todoName, setTodoName] = useState('');
+  // const [todoName, setTodoName] = useState('');
   // const [submittedTodo, setSubmittedTodo] = useState(null);
   // const [todoList, setTodoList] = useState([]);
+  const todoInputRef = useRef();
 
   const todoListReducer = (state, action) => {
     switch (action.type) {
@@ -36,7 +37,7 @@ const todo = props => {
     return () => {
       console.log('Cleanup...');
     }
-  }, [todoName]);
+  }, []);
 
   const handleMouseMove = e => {
     console.log(e.clientX, e.clientY);
@@ -55,11 +56,12 @@ const todo = props => {
   //   }
   // }, [submittedTodo]);
 
-  const handleInputChange = e => {
-    setTodoName(e.target.value);
-  }
+  // const handleInputChange = e => {
+  //   setTodoName(e.target.value);
+  // }
 
   const handleAddTodo = () => {
+    const todoName = todoInputRef.current.value;
     axios.post(db.POSTS_DB + '.json', {name: todoName})
     .then(res => {
       setTimeout(() => {
@@ -85,8 +87,9 @@ const todo = props => {
       <input
         type="text"
         placeholder="Todo"
-        onChange={handleInputChange}
-        value={todoName}
+        // onChange={handleInputChange}
+        // value={todoName}
+        ref={todoInputRef}
       />
       <button type="button" onClick={handleAddTodo}>Add</button>
       <ul>
